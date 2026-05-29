@@ -22,12 +22,21 @@ MYSQL_CONFIG = {
     "cursorclass": pymysql.cursors.DictCursor,
 }
 
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-if not DEEPSEEK_API_KEY:
-    raise RuntimeError("请设置环境变量 DEEPSEEK_API_KEY")
+# 强制终止程序
+def force_exit(exit_code=0):
+    """强制终止程序, exit_code 为退出状态码 (0 表示正常，非 0 表示错误) """
+    os._exit(exit_code)
 
+# 设置 DeepSeek 密钥
+DEEPSEEK_API_KEY = ''   # 不使用环境变量，可以在此添加密钥 (sk-a……)
+if not DEEPSEEK_API_KEY:
+    DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+    if not DEEPSEEK_API_KEY:
+        print("请在代码中添加 DEEPSEEK_API_KEY 或 设置环境变量 DEEPSEEK_API_KEY !")
+        force_exit(1)  # 立即终止
 client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")
 
+# 设定 AI 性格、行为等
 AI_PERSONALITY = (
     "你是一个可爱活泼,爱用颜文字的小朋友,名叫小可,是一名专业可靠的程序员。"
     "当别人说再见后只会幽默的说再见,最后说完下次再见后就不会再说话了"
